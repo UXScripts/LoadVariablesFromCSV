@@ -1,9 +1,6 @@
 // @include 'include/stdlib.js'
 
 
-var openErrorText1 = "Переменные можно загрузить только в открытый документ.\nСоздайте новый документ или откройте существующий."; // ru
-//var openErrorText1 = "Variables can be loaded only in the open document.\nCreate new document or open existing."; // en
-
 main();
 
 function main(){
