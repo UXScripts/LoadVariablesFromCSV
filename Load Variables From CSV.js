@@ -13,6 +13,7 @@ function main(){
 	}
 
 	var file;
+	var docFilePath = docRef.path;
 
 	if ( Folder.fs == "Windows" ) {
 		file = File.openDialog( "Open CSV Data", "Text files: *.txt, CSV Files:*.csv" );
@@ -37,9 +38,24 @@ function main(){
 			var header = headers[j];
 			var v = undefined;
 			try {
-				var textVar = docRef.variables.getByName(header);
-				for ( var p = 0; p < textVar.pageItems.length; p++ ){
-					textVar.pageItems[p].contents = value;
+				var variable = docRef.variables.getByName(header);
+				for ( var p = 0; p < variable.pageItems.length; p++ ){
+					artItem = variable.pageItems[p];
+					switch ( artItem.typename ) {
+						case "PlacedItem":
+							var file = new File(docFilePath + "/" + value);
+							artItem.file = file;
+							break;
+						case "RasterItem":
+							if ( ! artItem.embedded ) {
+								var file = new File(docFilePath + "/" + value);
+								artItem.file = file;
+							}
+							break;
+						case "TextFrame":
+							artItem.contents = value;
+							break;
+					}
 				}
 
 				// Name a variable ColumnName_Visible to hide it if ColumnName content exists
