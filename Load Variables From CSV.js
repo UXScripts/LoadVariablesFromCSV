@@ -30,15 +30,26 @@ function main(){
 	docRef.dataSets.removeAll();
 
 	for ( var i = 0; i < data.length; i++ ) {
+
 		var row = data[i];
 		var ds = docRef.dataSets.add();
 		ds.name = row[0];
-		for ( var j = 0; j < row.length; j++ ) {
-			var value = row[j];
+
+		for ( var j = 0; j < headers.length; j++ ) {
+
 			var header = headers[j];
-			var v = undefined;
+			var value = row[j];
+			if (value == undefined) value = "";
+			var valueBoolean = parseInt(value) ? true : false;
+
+			var variable;
+
 			try {
 				var variable = docRef.variables.getByName(header);
+			} catch(e){}
+
+			if (variable) {
+
 				for ( var p = 0; p < variable.pageItems.length; p++ ){
 					artItem = variable.pageItems[p];
 					switch ( artItem.typename ) {
@@ -58,20 +69,43 @@ function main(){
 					}
 				}
 
-				// Name a variable ColumnName_Visible to hide it if ColumnName content exists
+				// Bebug
+				// alert("Row:" + i + ", " + header+" Visible:"+header.indexOf('_Visible')+" Invisible:" + header.indexOf('_Invisible') + " Value: " + value + " BValue: " + valueBoolean );
+
+				// Explicitly indicated visibility variable
+				if (header.indexOf('_Visible') > 0) {
+					for ( var p = 0; p < variable.pageItems.length; p++ ){
+						variable.pageItems[p].hidden = valueBoolean ? false : true;
+					}
+				}
+
+				// Explicitly indicated Invisibility variable
+				if (header.indexOf('_Invisible') > 0) {
+					for ( var p = 0; p < variable.pageItems.length; p++ ){
+						variable.pageItems[p].hidden = valueBoolean ? true : false;
+					}
+				}
+
+			}
+
+			// Name a variable ColumnName_Visible to hide it if ColumnName content exists
+			try {
 				var visVar =  docRef.variables.getByName(header + '_Visible');
 				for ( var p = 0; p < visVar.pageItems.length; p++ ){
-					visVar.pageItems[p].hidden = (value) ? false : true;
+					visVar.pageItems[p].hidden = valueBoolean ? false : true;
 				}
+			} catch(e) {}
 
-				// Name a variable ColumnName_Invisible to hide it if ColumnName content exists
+			// Name a variable ColumnName_Invisible to hide it if ColumnName content exists
+			try {
 				var visVar =  docRef.variables.getByName(header + '_Invisible');
 				for ( var p = 0; p < visVar.pageItems.length; p++ ){
-					visVar.pageItems[p].hidden = (value) ? true : false;
+					visVar.pageItems[p].hidden = valueBoolean ? true : false;
 				}
+			} catch(e){}
 
-			} catch(e){};
 		}
+
 		ds.update();
 		redraw();
 	}
