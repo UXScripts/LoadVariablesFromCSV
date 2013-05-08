@@ -49,12 +49,10 @@ function main(){
 			} catch(e){}
 
 			if (variable) {
-				alert(variable)
 				for ( var p = 0; p < variable.pageItems.length; p++ ){
 					artItem = variable.pageItems[p];
 					switch ( artItem.typename ) {
 						case "PlacedItem":
-							alert(docFilePath + "/" + value)
 							var file = new File(docFilePath + "/" + value);
 							artItem.file = file;
 							break;
