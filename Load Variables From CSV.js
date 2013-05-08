@@ -42,18 +42,19 @@ function main(){
 			if (value == undefined) value = "";
 			var valueBoolean = parseInt(value) ? true : false;
 
-			var variable;
+			var variable = undefined;
 
 			try {
-				var variable = docRef.variables.getByName(header);
+				variable = docRef.variables.getByName(header);
 			} catch(e){}
 
 			if (variable) {
-
+				alert(variable)
 				for ( var p = 0; p < variable.pageItems.length; p++ ){
 					artItem = variable.pageItems[p];
 					switch ( artItem.typename ) {
 						case "PlacedItem":
+							alert(docFilePath + "/" + value)
 							var file = new File(docFilePath + "/" + value);
 							artItem.file = file;
 							break;
@@ -69,7 +70,7 @@ function main(){
 					}
 				}
 
-				// Bebug
+				// Debug
 				// alert("Row:" + i + ", " + header+" Visible:"+header.indexOf('_Visible')+" Invisible:" + header.indexOf('_Invisible') + " Value: " + value + " BValue: " + valueBoolean );
 
 				// Explicitly indicated visibility variable
